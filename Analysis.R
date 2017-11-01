@@ -1,7 +1,7 @@
 library("data.table")
 library("plotly")
 library("plyr")
-
+library("htmlwidgets")
 #Read the Data
 Facebook <- read.csv("Report.csv",header = T)
 #Set As Data Table
@@ -174,41 +174,35 @@ s4<-plot_ly(x = ~SharedVideo_Hour$Hour, y = ~SharedVideo_Hour$N,size=SharedVideo
 s5<-plot_ly(x = ~Video_Hour$Hour, y = ~Video_Hour$N,size=Video_Hour$N, type = 'scatter', mode = 'markers',marker = list(color ="purple"),name='Video')%>%
   layout(title = "Video",xaxis = list(title = "Hour of the day"),yaxis = list (title = "Total_Video"))
 
-#COMPARISON BETWEEN ALL THE TYPES AND HOUR
-subplot(s1,s2,s3,s4,s5,nrows = 5,shareX = TRUE)%>%layout(title = " ",xaxis = list(title = "Hour of the day"),yaxis = list (title = ""))
+#COMPARISON BETWEEN ALL THE TYPES BY HOUR
+HOUR <- subplot(s1,s2,s3,s4,s5,nrows = 5,shareX = TRUE)%>%layout(title = " ",xaxis = list(title = "Hour of the day"),yaxis = list (title = ""))
+export(HOUR, file ="Types by the Hour.png")
 
-#BAR PLOT for Day versus all the types
-plot_ly(title = 'Types per Day',x = ~Link_Day$Day, y = ~Link_Day$N, type = 'bar', name = 'Link') %>%
+#BAR PLOT for Different types being posted by Days
+DAY <- plot_ly(title = 'Types per Day',x = ~Link_Day$Day, y = ~Link_Day$N, type = 'bar', name = 'Link') %>%
   add_trace(x = ~Photo_Day$Day,y = ~Photo_Day$N, name = 'Photo') %>%
   add_trace(x = ~SharedVideo_Day$Day,y = ~SharedVideo_Day$N, name = 'SharedVideo') %>%
   add_trace(x = ~Status_Day$Day,y = ~Status_Day$N, name = 'Status') %>%
   add_trace(x = ~Video_Day$Day,y = ~Video_Day$N, name = 'Video') %>%
   layout(title = "Types Per Day",xaxis = list(title = ' ', tickfont = list(size = 12,color = 'rgb(107, 107, 107)')),yaxis = list(title = 'Counts'),barmode = 'group', bargap = 0.15, bargroupgap = 0.1)
+export(DAY, file ="Types by the Days.png")
 
-
-#LINE PLOT for Years 2015-2017
-#l1<-plot_ly(Total_Year[which(Total_Year$Type=='Link'),], x = ~Year, y = ~N, name = 'Link', type = 'scatter', mode = 'lines',line = list(color = 'rgb(205, 12, 24)', width = 4))
-#l2<-plot_ly(Total_Year[which(Total_Year$Type=='Photo'),], x = ~Year, y = ~N, name = 'Photo', type = 'scatter', mode = 'lines',line = list(color = 'rgb(22, 96, 167)', width = 4, dash = 'dash'))
-#l3<-plot_ly(Total_Year[which(Total_Year$Type=='Status'),], x = ~Year, y = ~N, name = 'Status', type = 'scatter', mode = 'lines',line = list(color = 'rgb(205, 12, 24)', width = 4,dash = 'dot'))
-#l4<-plot_ly(Total_Year[which(Total_Year$Type=='SharedVideo'),], x = ~Year, y = ~N, name = 'SharedVideo', type = 'scatter', mode = 'lines',line = list(color = 'rgb(22, 96, 167)', width = 4))
-#l5<-plot_ly(Total_Year[which(Total_Year$Type=='Video'),], x = ~Year, y = ~N, name = 'Video', type = 'scatter', mode = 'lines',line = list(color = 'rgb(205, 12, 24)', width = 4,dash = 'dash'))
-
-#subplot(l1,l2,l3,l4,l5,nrows = 5,shareX = TRUE)%>%layout(title = " ",xaxis = list(title = "Year"),yaxis = list (title = ""))
-
-#LINE PLOT for Month 2015-2017
+#LINE PLOT for Different types being posted by Month from 2015-2017
 w1<-plot_ly(Total_Month[which(Total_Month$Type=='Link'),], x = ~Posted, y = ~N, name = 'Link', type = 'scatter', mode = 'lines',line = list(color = 'rgb(205, 12, 24)', shape = "spline"))
 w2<-plot_ly(Total_Month[which(Total_Month$Type=='Photo'),], x = ~Posted, y = ~N, name = 'Photo', type = 'scatter', mode = 'lines',line = list(color = 'rgb(22, 96, 167)',shape = "spline"))
 w3<-plot_ly(Total_Month[which(Total_Month$Type=='Status'),], x = ~Posted, y = ~N, name = 'Status', type = 'scatter', mode = 'lines',line = list(color = 'rgb(205, 12, 24)', dash = 'dot'))
 w4<-plot_ly(Total_Month[which(Total_Month$Type=='SharedVideo'),], x = ~Posted, y = ~N, name = 'SharedVideo', type = 'scatter', mode = 'lines',line = list(color = 'rgb(22, 96, 167)', shape = "linear"))
 w5<-plot_ly(Total_Month[which(Total_Month$Type=='Video'),], x = ~Posted, y = ~N, name = 'Video', type = 'scatter', mode = 'lines',line = list(color = 'rgb(205, 12, 24)',dash = 'dash'))
 
-subplot(w1,w2,w3,w4,w5,nrows = 5,shareX = TRUE)%>%layout(title = "Types per Year-Month ",xaxis = list(title = "Year-Month"),yaxis = list (title = ""))
+MONTH <- subplot(w1,w2,w3,w4,w5,nrows = 5,shareX = TRUE)%>%layout(title = "Types per Year-Month ",xaxis = list(title = " "),yaxis = list (title = ""))
+export(MONTH, file ="Types by the Months.png")
 
-#LINE PLOT for Minutes
+#LINE PLOT for Different types being posted by the Minute
 d1<-plot_ly(Total_DN[which(Total_DN$Type=='Link'),], x = ~N, y = ~DN,name='Link', type = 'bar', orientation = 'h')
 d2<-plot_ly(Total_DN[which(Total_DN$Type=='Photo'),], x = ~N, y = ~DN,name='Photo', type = 'bar', orientation = 'h')
 d3<-plot_ly(Total_DN[which(Total_DN$Type=='Status'),], x = ~N, y = ~DN,name='Status', type = 'bar', orientation = 'h')
 d4<-plot_ly(Total_DN[which(Total_DN$Type=='SharedVideo'),], x = ~N, y = ~DN,name='SharedVideo', type = 'bar', orientation = 'h')
 d5<-plot_ly(Total_DN[which(Total_DN$Type=='Video'),], x = ~N, y = ~DN,name='Video', type = 'bar', orientation = 'h')
 
-subplot(d1,d2,d3,d4,d5,nrows = 5,shareX = TRUE)%>%layout(title = "Types used in Day/Night",xaxis = list(title = "Count"),yaxis = list (title = " "))
+MINUTES <- subplot(d1,d2,d3,d4,d5,nrows = 5,shareX = TRUE)%>%layout(title = "Types used in Day/Night",xaxis = list(title = "Count"),yaxis = list (title = " "))
+export(MINUTES, file ="Types by the Minute.png")
